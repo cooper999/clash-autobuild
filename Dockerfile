@@ -29,4 +29,4 @@ ENTRYPOINT ["/bin/sh", "-c", "\
 "]
 
 # 暴露Clash服务的端口
-EXPOSE 7890 9090
+EXPOSE 7890 7894 9090
