@@ -7,26 +7,14 @@ FROM tinyserve/mihomo:latest
 # 如果是基于Debian/Ubuntu，则使用 apt-get update && apt-get install -y curl
 RUN apk add --no-cache curl
 
-# 将启动逻辑直接嵌入到 ENTRYPOINT 中
-# 使用 /bin/sh -c "..." 允许我们执行一个字符串作为shell命令
-ENTRYPOINT ["/bin/sh", "-c", "\
-    CONFIG_URL=${CLASH_CONFIG_URL:?Error: CLASH_CONFIG_URL environment variable is not set.}; \
-    CONFIG_FILE=\"/etc/mihomo/config.yaml\"; \
-    \
-    echo \"Downloading Clash configuration from $CONFIG_URL...\"; \
-    mkdir -p \"$(dirname \"$CONFIG_FILE\")\"; \
-    curl -sL \"$CONFIG_URL\" -o \"$CONFIG_FILE\"; \
-    \
-    if [ $? -eq 0 ]; then \
-        echo \"Clash configuration downloaded successfully.\"; \
-    else \
-        echo \"Failed to download Clash configuration. Exiting.\"; \
-        exit 1; \
-    fi; \
-    \
-    echo \"Starting Clash service...\"; \
-    exec clash -d \"$(dirname \"$CONFIG_FILE\")\"; \
-"]
+# 将entrypoint.sh复制到镜像中
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# 暴露Clash服务的端口
-EXPOSE 7890 7894 9090
+# 赋予脚本执行权限
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# 暴露Clash服务的端口（根据你的配置文件中的实际端口）
+EXPOSE 7890 9090
+
+# 设置容器启动时执行的命令为我们的启动脚本
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
