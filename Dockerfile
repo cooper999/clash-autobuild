@@ -2,7 +2,7 @@
 # 每次此工作流运行时，如果基础镜像有更新，Docker会拉取新版本。
 FROM tinyserve/mihomo:latest
 
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl jq # 添加 jq
 
 # 将entrypoint.sh复制到镜像中
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
