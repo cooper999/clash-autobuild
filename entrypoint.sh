@@ -21,4 +21,4 @@ fi
 
 echo "Starting Clash service..."
 # 启动Clash服务，使用下载的配置文件
-exec clash -d "$(dirname "$CONFIG_FILE")"
+exec /usr/local/bin/mihomo -d "$(dirname "$CONFIG_FILE")"
